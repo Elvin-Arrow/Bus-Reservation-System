@@ -270,19 +270,27 @@ public class Bus_Reservation_System {
         Thread.sleep(1500);
     }
 
-    public static void mod_res(Scanner input, File transactionFile, File reservationFile) throws Exception {
+    public static void mod_res(Scanner input, File transactionFile, File reservationFile) throws Exception {    // Method for modification for the reservations.
 
         System.out.println("=====================================================");
         System.out.println("\t\t\t  Reservation Modification");
         System.out.println("\t\t\t The time is " +timeNow("hm") +" hrs.");
         System.out.println("=====================================================");
 
+        // Make a scanner type object for reading the "Transaction File"
         Scanner readDrawer = new Scanner(transactionFile);
 
+
+        // Initialized the amount to zero.
         int rupees = 0;
+
+        // Checks if entry has been found for the given CNIC.
         boolean entry_found = false;
+
+        // Index for the matched CNIC number in the Passenger[] array.
         int foundAt = -1;
 
+        // Checks if the drawer already has some amount and adds it to the variable "rupees"
         if ( readDrawer.hasNextInt() ) {
             rupees = readDrawer.nextInt();
         }
@@ -291,11 +299,13 @@ public class Bus_Reservation_System {
         System.out.print("Please Enter CNIC: ");
         String cnic = input.nextLine();
 
-        // Array from the Reservations File
+        // Array "people_array" from the Reservations File
         Passenger[] people_array = fetchPassengerDatabase();
 
+        // Loop for searching whether the person who want to modify his reservation booked or not.
         for ( int i = 0 ; i < people_array.length ; i++ ) {
 
+            // Prints the particulars of booking if found
             if ( cnic.equals( people_array[i].CNIC ) ) {
 
                 System.out.println("Name: " +people_array[i].Name);
@@ -314,11 +324,12 @@ public class Bus_Reservation_System {
             int time_of_bus = Integer.parseInt(time_of_bus_str);
             int time_rn = timeNow("hm");
 
+            // Checks if the person is cancelling 15 minutes before so the amount can be refunded back to him
             if ( time_of_bus - time_rn >= 15 ) {
                 rupees -= getFare(people_array[foundAt].DestinationCity);
             }
 
-            else {
+            else { // If the person id cancelling, less than 15 minutes prior to deparutre, this else condition telling that the amount cannot be refunded
 
                 System.out.println("We're sorry! There are less than 15 minutes prior to departure. ");
 
@@ -328,14 +339,17 @@ public class Bus_Reservation_System {
                 System.out.println();
             }
 
-
+            // The modification process.
             System.out.println();
             System.out.print("Please enter your destination: ");
 
+            // Saves the "city'" and the "bus number" into that particular index of array which was reserved for the old booking.
             people_array[foundAt].DestinationCity = getCity(input);
-            getBusNumber(people_array[foundAt]); //*** Updated to invoke new method ***
+            getBusNumber(people_array[foundAt]);
+            // Adds the fareof the new trip to the drawer
             rupees += getFare(people_array[foundAt].DestinationCity);
 
+            // Print the booking details
             System.out.println();
             System.out.println("Ticket for " + people_array[foundAt].DestinationCity + " booked");
             System.out.println();
@@ -346,19 +360,22 @@ public class Bus_Reservation_System {
             System.out.println("Departure at: " + getBusTiming( people_array[foundAt].DestinationCity, people_array[foundAt].BusNumber));
             System.out.println("Departure date: " + people_array[foundAt].BookingDate);
 
+            // Incrementing the bus number
             people_array[foundAt].BusNumber++;
 
-            // updating drawer
+            // Updating the drawer by creating a new PrintWriter object and saves the "rupees" into the file.
             PrintWriter transactionWriter = new PrintWriter(transactionFile);
             transactionWriter.println(rupees);
-            transactionWriter.flush();
             transactionWriter.close();
+            // Writing process completed. ( Transaction File )
+
+
 
 
             //updating reservations database
             PrintWriter reservationWriter = new PrintWriter(reservationFile);
 
-            // *** Changed this to for each loop ***
+            // This loops updates the Reservation database according to the array.
             for ( Passenger m : people_array ) {
                 reservationWriter.println(m.Name);
                 reservationWriter.println(m.CNIC);
@@ -368,10 +385,11 @@ public class Bus_Reservation_System {
             }
 
             reservationWriter.close();
+            // Writing process completed. ( Reservation File )
 
         }
 
-        else {
+        else { // If the old boooking isn't found then it asks if the person wants a new reservation to be made.
 
             System.out.println();
             System.out.println("Sorry, no previous reservation found.");
@@ -382,7 +400,7 @@ public class Bus_Reservation_System {
             String choice = input.nextLine();
 
             if ( choice.equalsIgnoreCase("y") ) {
-                new_res(input);
+                new_res(input); // Invoking the new_res() method for the new reservation.
             }
 
             else {
@@ -395,7 +413,7 @@ public class Bus_Reservation_System {
 
         Thread.sleep(1500);
 
-    }
+    } // new_res() method ends here.
 
     public static void print_res() throws Exception {
         System.out.println("=====================================================");
