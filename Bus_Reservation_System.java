@@ -701,7 +701,7 @@ public class Bus_Reservation_System {
         else {
             do {
                 i = 0;
-                if ((time < 9) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if ((time < 9 && time >= 24) && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
