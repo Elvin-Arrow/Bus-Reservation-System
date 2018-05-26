@@ -136,7 +136,7 @@ public class Bus_Reservation_System {
         //Find the appropriate bus
         getBusNumber(dude);
 
-        //Get drawer contents and update them
+        //Get drawer contents
         if (drawerReader.hasNextLine())
             amount = drawerReader.nextInt();
         drawerReader.close();
@@ -560,7 +560,7 @@ public class Bus_Reservation_System {
 
         //Working block
         //Decide bus number
-        if (dude.DestinationCity.equals("Muzaffarabad")) {
+        if (dude.DestinationCity.equalsIgnoreCase("muzaffarabad") {
             do {
                 i = 0;
                 if ((time < 5 || time >= 20) && seatAvailability(dude.DestinationCity, dateNow, i)) {
@@ -812,8 +812,9 @@ public class Bus_Reservation_System {
             FileRead.nextLine(); //Go to next line
             lineCount++; //Count the line
         }
-            /*Each passenger has 4 attributes, so number of passengers is obtained
-              by dividing the number of lines by 4
+            /*
+              Each passenger has 5 attributes, so number of passengers is obtained
+              by dividing the number of lines by 5
             */
         return (lineCount / 5);
     }
