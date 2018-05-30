@@ -177,11 +177,11 @@ public class Bus_Reservation_System {
             reservationWriter.println(i.BookingDate);
         }
 
-        reservationWriter.println(newDude.Name);
-        reservationWriter.println(newDude.CNIC);
-        reservationWriter.println(newDude.DestinationCity);
-        reservationWriter.println(newDude.BusNumber);
-        reservationWriter.println(newDude.BookingDate);
+        reservationWriter.println(dude.Name);
+        reservationWriter.println(dude.CNIC);
+        reservationWriter.println(dude.DestinationCity);
+        reservationWriter.println(dude.BusNumber);
+        reservationWriter.println(dude.BookingDate);
         reservationWriter.close();
 
         Thread.sleep(1500);
