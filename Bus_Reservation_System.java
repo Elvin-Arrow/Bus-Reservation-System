@@ -165,7 +165,24 @@ public class Bus_Reservation_System {
         dude.BusNumber++;
 
         //Store user data
-        updateDataBase(dude);
+        File reservationFile = new File("reservationsDetails.txt");
+        Passenger [] allPassengers = fetchPassengerDatabase();
+        PrintWriter reservationWriter = new PrintWriter(reservationFile);
+        
+        for (Passenger i : allPassengers){
+            reservationWriter.println(i.Name);
+            reservationWriter.println(i.CNIC);
+            reservationWriter.println(i.DestinationCity);
+            reservationWriter.println(i.BusNumber);
+            reservationWriter.println(i.BookingDate);
+        }
+
+        reservationWriter.println(newDude.Name);
+        reservationWriter.println(newDude.CNIC);
+        reservationWriter.println(newDude.DestinationCity);
+        reservationWriter.println(newDude.BusNumber);
+        reservationWriter.println(newDude.BookingDate);
+        reservationWriter.close();
 
         Thread.sleep(1500);
     }
@@ -752,29 +769,6 @@ public class Bus_Reservation_System {
         if (seats >= 2)
             seatAvailable = false;
         return seatAvailable;
-    }
-
-    public static void updateDataBase(Passenger newDude) throws Exception {
-        //Declaration block
-        File reservationFile = new File("reservationsDetails.txt");
-        Passenger [] allPassengers = fetchPassengerDatabase();
-        PrintWriter reservationWriter = new PrintWriter(reservationFile);
-        //Working block
-
-        for (Passenger i : allPassengers){
-            reservationWriter.println(i.Name);
-            reservationWriter.println(i.CNIC);
-            reservationWriter.println(i.DestinationCity);
-            reservationWriter.println(i.BusNumber);
-            reservationWriter.println(i.BookingDate);
-        }
-
-        reservationWriter.println(newDude.Name);
-        reservationWriter.println(newDude.CNIC);
-        reservationWriter.println(newDude.DestinationCity);
-        reservationWriter.println(newDude.BusNumber);
-        reservationWriter.println(newDude.BookingDate);
-        reservationWriter.close();
     }
 
     public static Passenger [] fetchPassengerDatabase() throws  Exception {
