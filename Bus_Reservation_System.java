@@ -136,7 +136,7 @@ public class Bus_Reservation_System {
         //Find the appropriate bus
         getBusNumber(dude);
 
-        //Get drawer contents and update them
+        //Get drawer contents
         if (drawerReader.hasNextLine())
             amount = drawerReader.nextInt();
         drawerReader.close();
@@ -165,7 +165,24 @@ public class Bus_Reservation_System {
         dude.BusNumber++;
 
         //Store user data
-        updateDataBase(dude);
+        File reservationFile = new File("reservationsDetails.txt");
+        Passenger [] allPassengers = fetchPassengerDatabase();
+        PrintWriter reservationWriter = new PrintWriter(reservationFile);
+        
+        for (Passenger i : allPassengers){
+            reservationWriter.println(i.Name);
+            reservationWriter.println(i.CNIC);
+            reservationWriter.println(i.DestinationCity);
+            reservationWriter.println(i.BusNumber);
+            reservationWriter.println(i.BookingDate);
+        }
+
+        reservationWriter.println(newDude.Name);
+        reservationWriter.println(newDude.CNIC);
+        reservationWriter.println(newDude.DestinationCity);
+        reservationWriter.println(newDude.BusNumber);
+        reservationWriter.println(newDude.BookingDate);
+        reservationWriter.close();
 
         Thread.sleep(1500);
     }
@@ -560,7 +577,7 @@ public class Bus_Reservation_System {
 
         //Working block
         //Decide bus number
-        if (dude.DestinationCity.equals("Muzaffarabad")) {
+        if (dude.DestinationCity.equalsIgnoreCase("muzaffarabad") {
             do {
                 i = 0;
                 if ((time < 5 || time >= 20) && seatAvailability(dude.DestinationCity, dateNow, i)) {
@@ -754,29 +771,6 @@ public class Bus_Reservation_System {
         return seatAvailable;
     }
 
-    public static void updateDataBase(Passenger newDude) throws Exception {
-        //Declaration block
-        File reservationFile = new File("reservationsDetails.txt");
-        Passenger [] allPassengers = fetchPassengerDatabase();
-        PrintWriter reservationWriter = new PrintWriter(reservationFile);
-        //Working block
-
-        for (Passenger i : allPassengers){
-            reservationWriter.println(i.Name);
-            reservationWriter.println(i.CNIC);
-            reservationWriter.println(i.DestinationCity);
-            reservationWriter.println(i.BusNumber);
-            reservationWriter.println(i.BookingDate);
-        }
-
-        reservationWriter.println(newDude.Name);
-        reservationWriter.println(newDude.CNIC);
-        reservationWriter.println(newDude.DestinationCity);
-        reservationWriter.println(newDude.BusNumber);
-        reservationWriter.println(newDude.BookingDate);
-        reservationWriter.close();
-    }
-
     public static Passenger [] fetchPassengerDatabase() throws  Exception {
         //Working block
         Scanner reservationReader = new Scanner(new File("reservationsDetails.txt"));
@@ -812,8 +806,9 @@ public class Bus_Reservation_System {
             FileRead.nextLine(); //Go to next line
             lineCount++; //Count the line
         }
-            /*Each passenger has 4 attributes, so number of passengers is obtained
-              by dividing the number of lines by 4
+            /*
+              Each passenger has 5 attributes, so number of passengers is obtained
+              by dividing the number of lines by 5
             */
         return (lineCount / 5);
     }
