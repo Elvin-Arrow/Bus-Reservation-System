@@ -3,7 +3,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 
-public class Bus_Reservation_System {
+public class Run {
 
     public static void main(String[] args) throws Exception{
         //Declaration block
@@ -128,7 +128,7 @@ public class Bus_Reservation_System {
         System.out.println("Key in the passenger name");
         dude.Name = getInput.nextLine();
         System.out.print("CNIC: ");
-        dude.CNIC = getInput.nextLine();
+        dude.CNIC = validateCNIC(getInput.nextLine());
         System.out.print("Destination: ");
         dude.DestinationCity = getCity(getInput);
 
@@ -543,6 +543,28 @@ public class Bus_Reservation_System {
         drawerReader.close();
 
         Thread.sleep(1500);
+    }
+
+    public static String validateCNIC(String dude_CNIC) throws Exception{
+        //Declaration block
+        Scanner getInput = new Scanner(System.in);
+        Passenger [] database = fetchPassengerDatabase();
+        boolean unique;
+
+        //Working block
+        do{
+            unique = true;
+            for (Passenger i : database){
+                if (dude_CNIC.equals(i.CNIC)){
+                    unique = false;
+                    System.out.print("The booking with this CNIC already exists \nEnter another CNIC: ");
+                    dude_CNIC = getInput.nextLine();
+                    break;
+                }
+            }
+        }while(!unique);
+
+        return  dude_CNIC;
     }
 
     public static String getCity(Scanner getInput){
