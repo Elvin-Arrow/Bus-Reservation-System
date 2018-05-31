@@ -452,15 +452,15 @@ public class Run {
 
         for ( int i = 0 ; i < people.length ; i++ ) {
 
-            if ( people[i].DestinationCity.equals("Muzaffarabad") )
+            if ( people[i].DestinationCity.equalsIgnoreCase("Muzaffarabad") )
                 muzf_res++;
-            else if ( people[i].DestinationCity.equals("Peshawar") )
+            else if ( people[i].DestinationCity.equalsIgnoreCase("Peshawar") )
                 pswr_res++;
-            else if ( people[i].DestinationCity.equals("Sialkot") )
+            else if ( people[i].DestinationCity.equalsIgnoreCase("Sialkot") )
                 slkt_res++;
-            else if ( people[i].DestinationCity.equals("Faisalabad") )
+            else if ( people[i].DestinationCity.equalsIgnoreCase("Faisalabad") )
                 fsld_res++;
-            else if ( people[i].DestinationCity.equals("Lahore") )
+            else if ( people[i].DestinationCity.equalsIgnoreCase("Lahore") )
                 lhr_res++;
         }
 
@@ -599,7 +599,7 @@ public class Run {
 
         //Working block
         //Decide bus number
-        if (dude.DestinationCity.equalsIgnoreCase("muzaffarabad")) {
+        if (dude.DestinationCity.equalsIgnoreCase("muzaffarabad") ) {
             do {
                 i = 0;
                 if ((time < 5 || time >= 20) && seatAvailability(dude.DestinationCity, dateNow, i)) {
@@ -789,6 +789,10 @@ public class Run {
 
         }
         if (seats >= 2)
+            /*
+            seats are "2" for checking otherwise it should be
+            if (seats >= 55)
+             */
             seatAvailable = false;
         return seatAvailable;
     }
