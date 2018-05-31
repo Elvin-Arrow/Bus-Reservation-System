@@ -3,7 +3,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 
-public class Bus_Reservation_System {
+public class Run {
 
     public static void main(String[] args) throws Exception{
         //Declaration block
@@ -128,7 +128,7 @@ public class Bus_Reservation_System {
         System.out.println("Key in the passenger name");
         dude.Name = getInput.nextLine();
         System.out.print("CNIC: ");
-        dude.CNIC = getInput.nextLine();
+        dude.CNIC = validateCNIC(getInput.nextLine());
         System.out.print("Destination: ");
         dude.DestinationCity = getCity(getInput);
 
@@ -168,7 +168,7 @@ public class Bus_Reservation_System {
         File reservationFile = new File("reservationsDetails.txt");
         Passenger [] allPassengers = fetchPassengerDatabase();
         PrintWriter reservationWriter = new PrintWriter(reservationFile);
-        
+
         for (Passenger i : allPassengers){
             reservationWriter.println(i.Name);
             reservationWriter.println(i.CNIC);
@@ -177,11 +177,11 @@ public class Bus_Reservation_System {
             reservationWriter.println(i.BookingDate);
         }
 
-        reservationWriter.println(newDude.Name);
-        reservationWriter.println(newDude.CNIC);
-        reservationWriter.println(newDude.DestinationCity);
-        reservationWriter.println(newDude.BusNumber);
-        reservationWriter.println(newDude.BookingDate);
+        reservationWriter.println(dude.Name);
+        reservationWriter.println(dude.CNIC);
+        reservationWriter.println(dude.DestinationCity);
+        reservationWriter.println(dude.BusNumber);
+        reservationWriter.println(dude.BookingDate);
         reservationWriter.close();
 
         Thread.sleep(1500);
@@ -545,6 +545,28 @@ public class Bus_Reservation_System {
         Thread.sleep(1500);
     }
 
+    public static String validateCNIC(String dude_CNIC) throws Exception{
+        //Declaration block
+        Scanner getInput = new Scanner(System.in);
+        Passenger [] database = fetchPassengerDatabase();
+        boolean unique;
+
+        //Working block
+        do{
+            unique = true;
+            for (Passenger i : database){
+                if (dude_CNIC.equals(i.CNIC)){
+                    unique = false;
+                    System.out.print("The booking with this CNIC already exists \nEnter another CNIC: ");
+                    dude_CNIC = getInput.nextLine();
+                    break;
+                }
+            }
+        }while(!unique);
+
+        return  dude_CNIC;
+    }
+
     public static String getCity(Scanner getInput){
         String city;
         boolean correctCity;
@@ -577,7 +599,7 @@ public class Bus_Reservation_System {
 
         //Working block
         //Decide bus number
-        if (dude.DestinationCity.equalsIgnoreCase("muzaffarabad") {
+        if (dude.DestinationCity.equalsIgnoreCase("muzaffarabad")) {
             do {
                 i = 0;
                 if ((time < 5 || time >= 20) && seatAvailability(dude.DestinationCity, dateNow, i)) {
@@ -718,7 +740,7 @@ public class Bus_Reservation_System {
         else {
             do {
                 i = 0;
-                if ((time < 9 && time >= 24) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if ((time < 9 || time >= 24) && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
