@@ -3,7 +3,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 
-public class Run {
+public class Bus_Reservation_System {
 
     public static void main(String[] args) throws Exception{
         //Declaration block
