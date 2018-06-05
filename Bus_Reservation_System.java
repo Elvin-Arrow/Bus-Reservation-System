@@ -1,6 +1,9 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.text.DateFormat;
 
 public class Bus_Reservation_System {
@@ -9,6 +12,7 @@ public class Bus_Reservation_System {
         //Declaration block
         PrintWriter transactionWriter;
         PrintWriter reservationWriter;
+
         File reservationFile = new File("reservationsDetails.txt");
         File transactionFile = new File("drawer.txt");
         Scanner getInput = new Scanner(System.in);
@@ -21,87 +25,108 @@ public class Bus_Reservation_System {
         if (!reservationFile.exists())
             reservationWriter = new PrintWriter(reservationFile);
 
-        while (userChoice != 0){
-            mainScreen();
-            System.out.print("Your selection: ");
-            userChoice = getInput.nextInt();
-            getInput.nextLine();
-            switch (userChoice){
-                case 1:{ //New reservation
-                    new_res(getInput);
+            while (userChoice != 0) {
 
-                    break;
+                try {
+                    mainScreen();
+                    System.out.print("Your selection: ");
+                    userChoice = getInput.nextInt();
+                    getInput.nextLine();
+                    switch (userChoice) {
+
+                        case 1: { //New reservation
+                            new_res();
+                            break;
+                        }
+
+                        case 2: {
+                            Scanner reader = new Scanner(reservationFile);
+                            if (reader.hasNextLine())
+                                cancel_res();
+                            else
+                                System.out.println("No reservation today");
+                            reader.close();
+
+                            System.out.println();
+                            break;
+                        }
+
+                        case 3: {
+                            Scanner reader = new Scanner(reservationFile);
+                            if (reader.hasNextLine())
+                                mod_res();
+                            else
+                                System.out.println("No reservation today");
+                            reader.close();
+
+                            System.out.println();
+                            break;
+                        }
+
+                        case 4: {
+                            Scanner reader = new Scanner(reservationFile);
+                            if (reader.hasNextLine())
+                                print_res();
+                            else
+                                System.out.println("No reservation today");
+                            reader.close();
+
+                            System.out.println();
+                            break;
+                        }
+
+                        case 5: {
+                            Scanner reader = new Scanner(reservationFile);
+                            if (reader.hasNextLine())
+                                search_res();
+                            else
+                                System.out.println("No reservation today");
+                            reader.close();
+
+                            System.out.println();
+                            break;
+                        }
+
+                        case 6: {
+                            Scanner reader = new Scanner(reservationFile);
+                            if (reader.hasNextLine())
+                                drawer();
+                            else
+                                System.out.println("No reservation today");
+                            reader.close();
+
+                            System.out.println();
+                            break;
+                        }
+
+                        case 0: {
+                            System.out.println();
+                            System.out.println("Program terminated");
+                            break;
+                        }
+
+                        default:
+                            System.out.println("Error! No such command found");
+                    }
+
                 }
-                case 2:{
-                    Scanner reader = new Scanner(reservationFile);
-                    if (reader.hasNextLine())
-                        cancel_res(reservationFile, transactionFile);
-                    else
-                        System.out.println("No reservation today");
-                    reader.close();
+
+                catch (InputMismatchException e) {
 
                     System.out.println();
-                    break;
-                }
-                case 3:{
-                    Scanner reader = new Scanner(reservationFile);
-                    if (reader.hasNextLine())
-                        mod_res(getInput, transactionFile, reservationFile);
-                    else
-                        System.out.println("No reservation today");
-                    reader.close();
-
+                    System.out.print("Invalid Selection! Please try again");
                     System.out.println();
-                    break;
-                }
-                case 4:{
-                    Scanner reader = new Scanner(reservationFile);
-                    if (reader.hasNextLine())
-                        print_res();
-                    else
-                        System.out.println("No reservation today");
-                    reader.close();
-
                     System.out.println();
-                    break;
+                    getInput.next();
+                    Thread.sleep(500);
                 }
-                case 5:{
-                    Scanner reader = new Scanner(reservationFile);
-                    if (reader.hasNextLine())
-                        search_res(getInput);
-                    else
-                        System.out.println("No reservation today");
-                    reader.close();
-
-                    System.out.println();
-                    break;
-                }
-                case 6:{
-                    Scanner reader = new Scanner(reservationFile);
-                    if (reader.hasNextLine())
-                        drawer();
-                    else
-                        System.out.println("No reservation today");
-                    reader.close();
-
-                    System.out.println();
-                    break;
-                }
-                case 0:{
-                    System.out.println();
-                    System.out.println("Program terminated");
-                    break;
-                }
-                default:
-                    System.out.println("Error! No such command found");
             }
-        }
 
     }
 
     public static void mainScreen() {
         System.out.println("=====================================================");
-        System.out.println("\t\t\t  Bus Reservation System");
+        System.out.println("\t\t\t\t  Bus Reservation System");
         System.out.println("=====================================================");
         System.out.println("1.) New reservation \n" +
                 "2.) Cancel reservation \n" +
@@ -109,23 +134,26 @@ public class Bus_Reservation_System {
                 "4.) View/Print reservation \n" +
                 "5.) Search reservation \n" +
                 "6.) Drawer \n" +
-                "0. Exit");
+                "0.) Exit");
+        System.out.println();
     }
 
-    public static void new_res(Scanner getInput) throws Exception {
+    public static void new_res() throws Exception {
         System.out.println("=====================================================");
         System.out.println("\t\t\t  New Reservation");
         System.out.println("=====================================================");
 
         //Declaration block
         PrintWriter drawerWriter;
+        Scanner getInput = new Scanner(System.in);
         Scanner drawerReader = new Scanner(new File("drawer.txt"));
         Passenger dude = new Passenger();
         int amount = 0;
+
         //Working block
 
         //Get user data
-        System.out.println("Key in the passenger name");
+        System.out.print("Key in the passenger name: ");
         dude.Name = getInput.nextLine();
         System.out.print("CNIC: ");
         dude.CNIC = validateCNIC(getInput.nextLine());
@@ -184,16 +212,21 @@ public class Bus_Reservation_System {
         reservationWriter.println(dude.BookingDate);
         reservationWriter.close();
 
-        Thread.sleep(1500);
+        getFeedback(dude.Name);
+
+        enterToContinue();
     }
 
-    public static void cancel_res(File reservationFile, File transactionFile)throws Exception {
+    public static void cancel_res()throws Exception {
         System.out.println("=====================================================");
         System.out.println("\t\t\t  Cancel Reservation");
         System.out.println("=====================================================");
 
         int amount = 0;
         int recordFound = 0;
+
+        File reservationFile = new File("reservationsDetails.txt");
+        File transactionFile = new File("drawer.txt");
 
         Scanner readDrawer = new Scanner(transactionFile);
         if (readDrawer.hasNextInt())
@@ -212,7 +245,7 @@ public class Bus_Reservation_System {
         int index =0;
 
         for (int i = 0; i<total_passengers; i++ ){
-            if (CNIC.equals(people[i].CNIC)){
+            if (CNIC.equals(people[i].CNIC)) {
                 recordFound = 1;
                 System.out.println("Name: " +people[i].Name);
                 System.out.println("CNIC: " +people[i].CNIC);
@@ -220,7 +253,8 @@ public class Bus_Reservation_System {
                 System.out.println("Bus Number" +people[i].BusNumber);
                 System.out.println("Booking Date: " +people[i].BookingDate);
 
-                index = i;}
+                index = i;
+            }
         }
 
         if (recordFound == 0){
@@ -279,15 +313,17 @@ public class Bus_Reservation_System {
                 canceldrawerwriter.close();
                 Thread.sleep(500);
                 System.out.println("Reservation Cancelled");
+                System.out.println();
 
+                getFeedback(people[index].Name);
             }
 
         }
 
-        Thread.sleep(1500);
+        enterToContinue();
     }
 
-    public static void mod_res(Scanner input, File transactionFile, File reservationFile) throws Exception {    // Method for modification for the reservations.
+    public static void mod_res() throws Exception {    // Method for modification for the reservations.
 
         System.out.println("=====================================================");
         System.out.println("\t\t\t  Reservation Modification");
@@ -295,7 +331,10 @@ public class Bus_Reservation_System {
         System.out.println("=====================================================");
 
         // Make a scanner type object for reading the "Transaction File"
+        File reservationFile = new File("reservationsDetails.txt");
+        File transactionFile = new File("drawer.txt");
         Scanner readDrawer = new Scanner(transactionFile);
+        Scanner input = new Scanner(System.in);
 
 
         // Initialized the amount to zero.
@@ -406,7 +445,7 @@ public class Bus_Reservation_System {
 
         }
 
-        else { // If the old boooking isn't found then it asks if the person wants a new reservation to be made.
+        else { // If the old booking isn't found then it asks if the person wants a new reservation to be made.
 
             System.out.println();
             System.out.println("Sorry, no previous reservation found.");
@@ -417,7 +456,7 @@ public class Bus_Reservation_System {
             String choice = input.nextLine();
 
             if ( choice.equalsIgnoreCase("y") ) {
-                new_res(input); // Invoking the new_res() method for the new reservation.
+                new_res(); // Invoking the new_res() method for the new reservation.
             }
 
             else {
@@ -428,9 +467,11 @@ public class Bus_Reservation_System {
 
         }
 
-        Thread.sleep(1500);
+        getFeedback(people_array[foundAt].Name);
 
-    } // new_res() method ends here.
+        enterToContinue();
+
+    }
 
     public static void print_res() throws Exception {
         System.out.println("=====================================================");
@@ -450,17 +491,17 @@ public class Bus_Reservation_System {
         int fsld_res = 0; // Faisalabad
         int lhr_res = 0; // Lahore
 
-        for ( int i = 0 ; i < people.length ; i++ ) {
+        for (Passenger i : people) {
 
-            if ( people[i].DestinationCity.equalsIgnoreCase("Muzaffarabad") )
+            if (i.DestinationCity.equalsIgnoreCase("Muzaffarabad"))
                 muzf_res++;
-            else if ( people[i].DestinationCity.equalsIgnoreCase("Peshawar") )
+            else if (i.DestinationCity.equalsIgnoreCase("Peshawar"))
                 pswr_res++;
-            else if ( people[i].DestinationCity.equalsIgnoreCase("Sialkot") )
+            else if (i.DestinationCity.equalsIgnoreCase("Sialkot"))
                 slkt_res++;
-            else if ( people[i].DestinationCity.equalsIgnoreCase("Faisalabad") )
+            else if (i.DestinationCity.equalsIgnoreCase("Faisalabad"))
                 fsld_res++;
-            else if ( people[i].DestinationCity.equalsIgnoreCase("Lahore") )
+            else if (i.DestinationCity.equalsIgnoreCase("Lahore"))
                 lhr_res++;
         }
 
@@ -471,17 +512,18 @@ public class Bus_Reservation_System {
         System.out.println("Reservations to Lahore: " +lhr_res);
         System.out.println();
 
-        Thread.sleep(1500);
+        enterToContinue();
 
     }
 
-    public static void search_res(Scanner input) throws Exception {
+    public static void search_res() throws Exception {
 
         System.out.println("=====================================================");
         System.out.println("\t\t\t  Search for Reservations");
         System.out.println("=====================================================");
         System.out.println();
 
+        Scanner input = new Scanner(System.in);
         boolean found = false;
 
         Passenger[] list = fetchPassengerDatabase();
@@ -519,8 +561,7 @@ public class Bus_Reservation_System {
             System.out.println();
         }
 
-        Thread.sleep(1500);
-
+        enterToContinue();
 
     }
 
@@ -557,7 +598,7 @@ public class Bus_Reservation_System {
             for (Passenger i : database){
                 if (dude_CNIC.equals(i.CNIC)){
                     unique = false;
-                    System.out.print("The booking with this CNIC already exists \nEnter another CNIC: ");
+                    System.out.print("Sorry! A booking with this CNIC already exists. \nEnter another CNIC: ");
                     dude_CNIC = getInput.nextLine();
                     break;
                 }
@@ -844,13 +885,13 @@ public class Bus_Reservation_System {
         BusTimings timings = new BusTimings();
 
         //Working block
-        if (city.equals("Muzaffarabad"))
+        if (city.equalsIgnoreCase("Muzaffarabad"))
             return timings.Muzaffarabad[busNumber];
-        else if (city.equals("Peshawar"))
+        else if (city.equalsIgnoreCase("Peshawar"))
             return timings.Peshawar[busNumber];
-        else if (city.equals("Sialkot"))
+        else if (city.equalsIgnoreCase("Sialkot"))
             return timings.Sialkot[busNumber];
-        else if (city.equals("Faisalabad"))
+        else if (city.equalsIgnoreCase("Faisalabad"))
             return timings.Faisalabad[busNumber];
         else
             return timings.Lahore[busNumber];
@@ -858,13 +899,13 @@ public class Bus_Reservation_System {
 
     public static int getFare(String city){
         Fares fare = new Fares();
-        if (city.equals("Muzaffarabad"))
+        if (city.equalsIgnoreCase("Muzaffarabad"))
             return fare.Muzaffarabad;
-        else if (city.equals("Peshawar"))
+        else if (city.equalsIgnoreCase("Peshawar"))
             return fare.Peshawar;
-        else if (city.equals("Sialkot"))
+        else if (city.equalsIgnoreCase("Sialkot"))
             return  fare.Sialkot;
-        else if (city.equals("Faisalabad"))
+        else if (city.equalsIgnoreCase("Faisalabad"))
             return fare.Faisalabad;
         else
             return fare.Lahore;
@@ -892,6 +933,41 @@ public class Bus_Reservation_System {
             hours = (int)(((currentHour) * 100) + currentMinute);
 
         return hours;
+    }
+
+    public static void getFeedback(String name) throws Exception {
+        File feedFile = new File("feedbacks.txt");
+        FileWriter feedWriter = new FileWriter(feedFile, true);
+        BufferedWriter buffFeedWrite = new BufferedWriter(feedWriter);
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("Would you like to give feedback? Press \"1\" for feedback:  ");
+        int feedChoice = input.nextInt();
+        System.out.println();
+
+        if ( feedChoice == 1 ) {
+
+            System.out.println("Please enter your feedback:  ");
+            input.nextLine();
+            String feedbackString = input.nextLine();
+            Thread.sleep(250);
+            System.out.println();
+            System.out.println("Thank you for your feedback!");
+            System.out.println();
+
+            buffFeedWrite.write(name);
+            buffFeedWrite.newLine();
+            buffFeedWrite.write(feedbackString);
+            buffFeedWrite.newLine();
+            buffFeedWrite.flush();
+
+        }
+    }
+
+    public static void enterToContinue() throws Exception {
+        System.out.println("Press any key to continue. ");
+        System.in.read();
+        Thread.sleep(1500);
     }
 
 }
