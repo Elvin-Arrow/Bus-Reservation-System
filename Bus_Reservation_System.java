@@ -17,6 +17,7 @@ public class Bus_Reservation_System {
         File transactionFile = new File("drawer.txt");
         Scanner getInput = new Scanner(System.in);
         int userChoice = 1;
+
         //Working block
 
         //Create files if they don't exist
@@ -25,104 +26,86 @@ public class Bus_Reservation_System {
         if (!reservationFile.exists())
             reservationWriter = new PrintWriter(reservationFile);
 
-            while (userChoice != 0) {
+        while (userChoice != 0) {
 
-                try {
-                    mainScreen();
-                    System.out.print("Your selection: ");
-                    userChoice = getInput.nextInt();
-                    getInput.nextLine();
-                    switch (userChoice) {
+            mainScreen();
+            System.out.print("Your selection: ");
+            userChoice = getInput.nextInt();
+            getInput.nextLine();
+            switch (userChoice) {
 
-                        case 1: { //New reservation
-                            new_res();
-                            break;
-                        }
-
-                        case 2: {
-                            Scanner reader = new Scanner(reservationFile);
-                            if (reader.hasNextLine())
-                                cancel_res();
-                            else
-                                System.out.println("No reservation today");
-                            reader.close();
-
-                            System.out.println();
-                            break;
-                        }
-
-                        case 3: {
-                            Scanner reader = new Scanner(reservationFile);
-                            if (reader.hasNextLine())
-                                mod_res();
-                            else
-                                System.out.println("No reservation today");
-                            reader.close();
-
-                            System.out.println();
-                            break;
-                        }
-
-                        case 4: {
-                            Scanner reader = new Scanner(reservationFile);
-                            if (reader.hasNextLine())
-                                print_res();
-                            else
-                                System.out.println("No reservation today");
-                            reader.close();
-
-                            System.out.println();
-                            break;
-                        }
-
-                        case 5: {
-                            Scanner reader = new Scanner(reservationFile);
-                            if (reader.hasNextLine())
-                                search_res();
-                            else
-                                System.out.println("No reservation today");
-                            reader.close();
-
-                            System.out.println();
-                            break;
-                        }
-
-                        case 6: {
-                            Scanner reader = new Scanner(reservationFile);
-                            if (reader.hasNextLine())
-                                drawer();
-                            else
-                                System.out.println("No reservation today");
-                            reader.close();
-
-                            System.out.println();
-                            break;
-                        }
-
-                        case 0: {
-                            System.out.println();
-                            System.out.println("Program terminated");
-                            break;
-                        }
-
-                        default:
-                            System.out.println("Error! No such command found");
-                    }
-
+                case 1: { //New reservation
+                    new_res();
+                    break;
                 }
 
-                catch (InputMismatchException e) {
+                case 2: {
+                    Scanner reader = new Scanner(reservationFile);
+                    if (reader.hasNextLine())
+                        cancel_res();
+                    else
+                        System.out.println("No reservation today");
+                    reader.close();
 
                     System.out.println();
-                    System.out.print("Invalid Selection! Please try again");
-                    System.out.println();
-                    System.out.println();
-                    getInput.next();
-                    Thread.sleep(500);
+                    break;
                 }
+
+                case 3: {
+                    Scanner reader = new Scanner(reservationFile);
+                    if (reader.hasNextLine())
+                        mod_res();
+                    else
+                        System.out.println("No reservation today");
+                    reader.close();
+
+                    System.out.println();
+                    break;
+                }
+
+                case 4: {
+                    Scanner reader = new Scanner(reservationFile);
+                    if (reader.hasNextLine())
+                        print_res();
+                    else
+                        System.out.println("No reservation today");
+                    reader.close();
+
+                    System.out.println();
+                    break;
+                }
+
+                case 5: {
+                    Scanner reader = new Scanner(reservationFile);
+                    if (reader.hasNextLine())
+                        search_res();
+                    else
+                        System.out.println("No reservation today");
+                    reader.close();
+                }
+                case 6: {
+                    Scanner reader = new Scanner(reservationFile);
+                    if (reader.hasNextLine())
+                        drawer();
+                    else
+                        System.out.println("No reservation today");
+                    reader.close();
+
+                    System.out.println();
+                    break;
+                }
+
+                case 0: {
+                    System.out.println();
+                    System.out.println("Program terminated");
+                    break;
+                }
+
+                default:
+                    System.out.println("Error! No such command found");
             }
 
-    }
+        }
 
     public static void mainScreen() {
         System.out.println("=====================================================");
@@ -169,7 +152,7 @@ public class Bus_Reservation_System {
             amount = drawerReader.nextInt();
         drawerReader.close();
 
-        //Update cash amount
+        //Update drawer cash amount
         amount += getFare(dude.DestinationCity);
 
         //Update drawer
@@ -212,8 +195,6 @@ public class Bus_Reservation_System {
         reservationWriter.println(dude.BookingDate);
         reservationWriter.close();
 
-        getFeedback(dude.Name);
-
         enterToContinue();
     }
 
@@ -231,13 +212,11 @@ public class Bus_Reservation_System {
         Scanner readDrawer = new Scanner(transactionFile);
         if (readDrawer.hasNextInt())
             amount = readDrawer.nextInt();
-
-        // *** close the scanner object ***
         readDrawer.close();
 
-        //*** You could take the scanner from the main method ***
         Scanner input = new Scanner(System.in);
         System.out.print("Enter CNIC:  ");
+        System.out.println();
         String CNIC = input.nextLine();
         Passenger[] people = fetchPassengerDatabase();
 
@@ -252,33 +231,29 @@ public class Bus_Reservation_System {
                 System.out.println("Destination City: " +people[i].DestinationCity);
                 System.out.println("Bus Number" +people[i].BusNumber);
                 System.out.println("Booking Date: " +people[i].BookingDate);
-
                 index = i;
             }
         }
 
         if (recordFound == 0){
             System.out.println("Reservation not found");
-
         }
 
         else{
 
             Passenger[] newpeople = new Passenger[people.length-1];
-
+            System.out.println();
             System.out.print("Are you sure you want to cancel your reservation?\n"
                     +"Enter Y for Yes \n"
                     + "enter N for No:  ");
             String choice = input.next();
             if (choice.equalsIgnoreCase("y")){
-                //*** You could parseInt the "timecheck" directly instead of making a new variable ***
                 String timecheck = getBusTiming(people[index].DestinationCity, people[index].BusNumber-1);
                 int now = timeNow("hm");
                 int timecheckval = Integer.parseInt(timecheck);
 
-                if (timecheckval - now >= 15)
+                if (refundPossible(timecheckval, now))
                     amount -= getFare(people[index].DestinationCity);
-
 
                 int k=0;
 
@@ -293,8 +268,6 @@ public class Bus_Reservation_System {
                     newpeople[j].DestinationCity = people[k].DestinationCity;
                     newpeople[j].BusNumber = people[k].BusNumber;
                     newpeople[j].BookingDate = people[k].BookingDate;
-                    //*** This one is well just a orthodox programing practice, take k++ up in the loop condition
-                    //k++;
                 }
 
                 PrintWriter cancelWriter = new PrintWriter(reservationFile);
@@ -311,15 +284,10 @@ public class Bus_Reservation_System {
                 PrintWriter canceldrawerwriter = new PrintWriter(transactionFile);
                 canceldrawerwriter.println(amount);
                 canceldrawerwriter.close();
-                Thread.sleep(500);
                 System.out.println("Reservation Cancelled");
                 System.out.println();
-
-                getFeedback(people[index].Name);
             }
-
         }
-
         enterToContinue();
     }
 
@@ -381,11 +349,11 @@ public class Bus_Reservation_System {
             int time_rn = timeNow("hm");
 
             // Checks if the person is cancelling 15 minutes before so the amount can be refunded back to him
-            if ( time_of_bus - time_rn >= 15 ) {
+            if ( refundPossible(time_of_bus, time_rn) ) {
                 rupees -= getFare(people_array[foundAt].DestinationCity);
             }
 
-            else { // If the person id cancelling, less than 15 minutes prior to deparutre, this else condition telling that the amount cannot be refunded
+            else { // If the person is cancelling, less than 15 minutes prior to departure, this else condition telling that the amount cannot be refunded
 
                 System.out.println("We're sorry! There are less than 15 minutes prior to departure. ");
 
@@ -402,7 +370,7 @@ public class Bus_Reservation_System {
             // Saves the "city'" and the "bus number" into that particular index of array which was reserved for the old booking.
             people_array[foundAt].DestinationCity = getCity(input);
             getBusNumber(people_array[foundAt]);
-            // Adds the fareof the new trip to the drawer
+            // Adds the fare of the new trip to the drawer
             rupees += getFare(people_array[foundAt].DestinationCity);
 
             // Print the booking details
@@ -428,7 +396,7 @@ public class Bus_Reservation_System {
 
 
 
-            //updating reservations database
+            // Updating reservations database
             PrintWriter reservationWriter = new PrintWriter(reservationFile);
 
             // This loops updates the Reservation database according to the array.
@@ -466,11 +434,8 @@ public class Bus_Reservation_System {
             }
 
         }
-
-        getFeedback(people_array[foundAt].Name);
-
+        System.out.println();
         enterToContinue();
-
     }
 
     public static void print_res() throws Exception {
@@ -552,8 +517,8 @@ public class Bus_Reservation_System {
             System.out.println("Destination city: " + list[foundAt].DestinationCity);
             System.out.println("Bus Number: " + ( list[foundAt].BusNumber));
             System.out.println("Departure at: " + getBusTiming( list[foundAt].DestinationCity, list[foundAt].BusNumber-1));
-            System.out.println("Departure date: " + list[foundAt].BookingDate); // *** Added this print statement ***
-
+            System.out.println("Departure date: " + list[foundAt].BookingDate);
+            System.out.println();
         }
 
         else {
@@ -583,10 +548,13 @@ public class Bus_Reservation_System {
 
         drawerReader.close();
 
-        Thread.sleep(1500);
+        enterToContinue();
     }
 
     public static String validateCNIC(String dude_CNIC) throws Exception{
+
+        //The method is meant to prevent the entry of non-unique CNIC entry
+
         //Declaration block
         Scanner getInput = new Scanner(System.in);
         Passenger [] database = fetchPassengerDatabase();
@@ -609,6 +577,12 @@ public class Bus_Reservation_System {
     }
 
     public static String getCity(Scanner getInput){
+
+        /*
+        This method is used to get the destination city of a passenger and prevent entry of any
+        such city which is not being travelled to.
+         */
+
         String city;
         boolean correctCity;
         do{
@@ -630,6 +604,20 @@ public class Bus_Reservation_System {
     }
 
     public static void getBusNumber(Passenger dude) throws Exception {
+        /*
+
+        This method is used to get the bus number of the passenger.
+        The method is working on two basic constraints to decide which
+        bus number should be allocated to a particular passenger, namely;
+        the current time and the seat availability.
+        If the current time lies in between the departure timing of a bus
+        for any particular city and a seat is available in that bus, the
+        method will assign the bus to the passenger. In case of non-availability
+        of a bus in the nearest time frame, the next bus is checked for
+        availability of seats. If available, a seat is booked for that
+        bus otherwise, a booking is made for the next day.
+         */
+
         //Declaration block
         final long DATE_TOMORROW = (long)8.64e+7;
         int time = timeNow("h");
@@ -643,7 +631,7 @@ public class Bus_Reservation_System {
         if (dude.DestinationCity.equalsIgnoreCase("muzaffarabad") ) {
             do {
                 i = 0;
-                if ((time < 5 || time >= 20) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time < 5 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
@@ -670,6 +658,7 @@ public class Bus_Reservation_System {
                 else{
                     date += DATE_TOMORROW;
                     dateNow = dateFormat.format(date);
+                    time = 0;
                 }
 
             }while(true);
@@ -678,7 +667,7 @@ public class Bus_Reservation_System {
         else if (dude.DestinationCity.equalsIgnoreCase("peshawar")){
             do {
                 i = 0;
-                if ((time < 6 || time >= 21) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time < 6 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
@@ -705,6 +694,7 @@ public class Bus_Reservation_System {
                 else{
                     date += DATE_TOMORROW;
                     dateNow = dateFormat.format(date);
+                    time = 0;
                 }
 
             }while(true);
@@ -712,7 +702,7 @@ public class Bus_Reservation_System {
         else if (dude.DestinationCity.equalsIgnoreCase("sialkot")){
             do {
                 i = 0;
-                if ((time < 7 || time >= 22) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time < 7 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
@@ -739,6 +729,7 @@ public class Bus_Reservation_System {
                 else{
                     date += DATE_TOMORROW;
                     dateNow = dateFormat.format(date);
+                    time = 0;
                 }
 
             }while(true);
@@ -746,7 +737,7 @@ public class Bus_Reservation_System {
         else if (dude.DestinationCity.equalsIgnoreCase("faisalabad")){
             do {
                 i = 0;
-                if ((time < 8 || time >= 23) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time < 8 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
@@ -773,6 +764,7 @@ public class Bus_Reservation_System {
                 else{
                     date += DATE_TOMORROW;
                     dateNow = dateFormat.format(date);
+                    time = 0;
                 }
 
             }while(true);
@@ -781,7 +773,7 @@ public class Bus_Reservation_System {
         else {
             do {
                 i = 0;
-                if ((time < 9 || time >= 24) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time < 9 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
@@ -800,14 +792,15 @@ public class Bus_Reservation_System {
                 }
                 else
                     i++;
-                if (time < 24 && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time <= 23 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
                 }
                 else{
-                    date += DATE_TOMORROW; //Goto next day
+                    date += DATE_TOMORROW;
                     dateNow = dateFormat.format(date);
+                    time = 0;
                 }
 
             }while(true);
@@ -815,6 +808,16 @@ public class Bus_Reservation_System {
     }
 
     public static boolean seatAvailability(String city, String date, int bus) throws Exception {
+
+        /*
+        This method checks for seat availability based on three key factors,
+        one the destination city, second the bus number and lastly the departure
+        date. All the entries for the particular destination city and bus number
+        on a particular date are first counted and then based on the number of entries,
+        the program simply returns a true (denoting to availability of seat) or a false
+        (denoting to the non_availability of seats or a bus being already fully booked)
+         */
+
         //Declaration block
         Passenger [] passengers = fetchPassengerDatabase();
         int seats = 0;
@@ -839,6 +842,12 @@ public class Bus_Reservation_System {
     }
 
     public static Passenger [] fetchPassengerDatabase() throws  Exception {
+
+        /*
+        This method is used to create an array from the database file, which
+        houses all the reservations made thus far.
+         */
+
         //Working block
         Scanner reservationReader = new Scanner(new File("reservationsDetails.txt"));
         Passenger [] dudes = new Passenger[NumberOfRecords()];
@@ -861,6 +870,10 @@ public class Bus_Reservation_System {
     }
 
     public static int NumberOfRecords() throws Exception{
+        /*
+        Method to get the number of passengers in the database file.
+         */
+
         //Declaration block
 
         //Create Scanner object to read the data from file
@@ -881,6 +894,10 @@ public class Bus_Reservation_System {
     }
 
     public static String getBusTiming(String city, int busNumber){
+        /*
+        The method return the departure timings for any particular city
+         */
+
         //Declaration block
         BusTimings timings = new BusTimings();
 
@@ -898,6 +915,10 @@ public class Bus_Reservation_System {
     }
 
     public static int getFare(String city){
+        /*
+        This method returns the ticket fare for the required city
+         */
+
         Fares fare = new Fares();
         if (city.equalsIgnoreCase("Muzaffarabad"))
             return fare.Muzaffarabad;
@@ -913,6 +934,11 @@ public class Bus_Reservation_System {
     }
 
     public static int timeNow(String timeType){
+        /*
+        The method gets the current system and returns either hours or hour with minutes
+        depending on the time type specified at the time of method invocation
+         */
+
         int hours = 0;
         long totalMilliseconds = System.currentTimeMillis();
         long totalSeconds = totalMilliseconds / 1000;
@@ -935,39 +961,23 @@ public class Bus_Reservation_System {
         return hours;
     }
 
-    public static void getFeedback(String name) throws Exception {
-        File feedFile = new File("feedbacks.txt");
-        FileWriter feedWriter = new FileWriter(feedFile, true);
-        BufferedWriter buffFeedWrite = new BufferedWriter(feedWriter);
-        Scanner input = new Scanner(System.in);
+    public static boolean refundPossible(int busTime, int currentTime) {
+        /*
+        The method simply evaluated from the bus departure time and current
+        time whether refund is possible or not.
+         */
 
-        System.out.print("Would you like to give feedback? Press \"1\" for feedback:  ");
-        int feedChoice = input.nextInt();
-        System.out.println();
-
-        if ( feedChoice == 1 ) {
-
-            System.out.println("Please enter your feedback:  ");
-            input.nextLine();
-            String feedbackString = input.nextLine();
-            Thread.sleep(250);
-            System.out.println();
-            System.out.println("Thank you for your feedback!");
-            System.out.println();
-
-            buffFeedWrite.write(name);
-            buffFeedWrite.newLine();
-            buffFeedWrite.write(feedbackString);
-            buffFeedWrite.newLine();
-            buffFeedWrite.flush();
-
+        boolean refundFlag = true;
+        if (busTime > currentTime){
+            if (busTime - currentTime < 15)
+                refundFlag = false;
         }
+        return refundFlag;
     }
 
     public static void enterToContinue() throws Exception {
-        System.out.println("Press any key to continue. ");
+        System.out.println("Press enter to continue. ");
         System.in.read();
-        Thread.sleep(1500);
     }
 
 }
