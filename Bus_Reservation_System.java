@@ -103,7 +103,7 @@ public class Bus_Reservation_System {
             }
 
         }
-
+    }
     public static void mainScreen() {
         System.out.println("=====================================================");
         System.out.println("\t\t\t\t  Bus Reservation System");
