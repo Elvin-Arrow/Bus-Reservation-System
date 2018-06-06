@@ -1,14 +1,18 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.text.DateFormat;
 
-public class Run {
+public class Bus_Reservation_System {
 
     public static void main(String[] args) throws Exception{
         //Declaration block
         PrintWriter transactionWriter;
         PrintWriter reservationWriter;
+
         File reservationFile = new File("reservationsDetails.txt");
         File transactionFile = new File("drawer.txt");
         Scanner getInput = new Scanner(System.in);
@@ -78,11 +82,7 @@ public class Run {
                     else
                         System.out.println("No reservation today");
                     reader.close();
-
-                    System.out.println();
-                    break;
                 }
-
                 case 6: {
                     Scanner reader = new Scanner(reservationFile);
                     if (reader.hasNextLine())
@@ -106,8 +106,6 @@ public class Run {
             }
 
         }
-
-    }
 
     public static void mainScreen() {
         System.out.println("=====================================================");
@@ -289,7 +287,6 @@ public class Run {
                 System.out.println("Reservation Cancelled");
                 System.out.println();
             }
-
         }
         enterToContinue();
     }
@@ -439,7 +436,6 @@ public class Run {
         }
         System.out.println();
         enterToContinue();
-
     }
 
     public static void print_res() throws Exception {
