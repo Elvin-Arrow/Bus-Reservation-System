@@ -796,7 +796,7 @@ public class Run {
                 }
                 else
                     i++;
-                if (time < 24 && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time <= 23 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
