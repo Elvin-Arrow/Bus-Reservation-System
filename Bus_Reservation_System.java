@@ -437,7 +437,7 @@ public class Run {
             }
 
         }
-
+        System.out.println();
         enterToContinue();
 
     }
