@@ -13,6 +13,7 @@ public class Run {
         File transactionFile = new File("drawer.txt");
         Scanner getInput = new Scanner(System.in);
         int userChoice = 1;
+
         //Working block
 
         //Create files if they don't exist
@@ -21,21 +22,23 @@ public class Run {
         if (!reservationFile.exists())
             reservationWriter = new PrintWriter(reservationFile);
 
-        while (userChoice != 0){
+        while (userChoice != 0) {
+
             mainScreen();
             System.out.print("Your selection: ");
             userChoice = getInput.nextInt();
             getInput.nextLine();
-            switch (userChoice){
-                case 1:{ //New reservation
-                    new_res(getInput);
+            switch (userChoice) {
 
+                case 1: { //New reservation
+                    new_res();
                     break;
                 }
-                case 2:{
+
+                case 2: {
                     Scanner reader = new Scanner(reservationFile);
                     if (reader.hasNextLine())
-                        cancel_res(reservationFile, transactionFile);
+                        cancel_res();
                     else
                         System.out.println("No reservation today");
                     reader.close();
@@ -43,10 +46,11 @@ public class Run {
                     System.out.println();
                     break;
                 }
-                case 3:{
+
+                case 3: {
                     Scanner reader = new Scanner(reservationFile);
                     if (reader.hasNextLine())
-                        mod_res(getInput, transactionFile, reservationFile);
+                        mod_res();
                     else
                         System.out.println("No reservation today");
                     reader.close();
@@ -54,7 +58,8 @@ public class Run {
                     System.out.println();
                     break;
                 }
-                case 4:{
+
+                case 4: {
                     Scanner reader = new Scanner(reservationFile);
                     if (reader.hasNextLine())
                         print_res();
@@ -65,10 +70,11 @@ public class Run {
                     System.out.println();
                     break;
                 }
-                case 5:{
+
+                case 5: {
                     Scanner reader = new Scanner(reservationFile);
                     if (reader.hasNextLine())
-                        search_res(getInput);
+                        search_res();
                     else
                         System.out.println("No reservation today");
                     reader.close();
@@ -76,7 +82,8 @@ public class Run {
                     System.out.println();
                     break;
                 }
-                case 6:{
+
+                case 6: {
                     Scanner reader = new Scanner(reservationFile);
                     if (reader.hasNextLine())
                         drawer();
@@ -87,21 +94,24 @@ public class Run {
                     System.out.println();
                     break;
                 }
-                case 0:{
+
+                case 0: {
                     System.out.println();
                     System.out.println("Program terminated");
                     break;
                 }
+
                 default:
                     System.out.println("Error! No such command found");
             }
+
         }
 
     }
 
     public static void mainScreen() {
         System.out.println("=====================================================");
-        System.out.println("\t\t\t  Bus Reservation System");
+        System.out.println("\t\t\t\t  Bus Reservation System");
         System.out.println("=====================================================");
         System.out.println("1.) New reservation \n" +
                 "2.) Cancel reservation \n" +
@@ -109,23 +119,26 @@ public class Run {
                 "4.) View/Print reservation \n" +
                 "5.) Search reservation \n" +
                 "6.) Drawer \n" +
-                "0. Exit");
+                "0.) Exit");
+        System.out.println();
     }
 
-    public static void new_res(Scanner getInput) throws Exception {
+    public static void new_res() throws Exception {
         System.out.println("=====================================================");
         System.out.println("\t\t\t  New Reservation");
         System.out.println("=====================================================");
 
         //Declaration block
         PrintWriter drawerWriter;
+        Scanner getInput = new Scanner(System.in);
         Scanner drawerReader = new Scanner(new File("drawer.txt"));
         Passenger dude = new Passenger();
         int amount = 0;
+
         //Working block
 
         //Get user data
-        System.out.println("Key in the passenger name");
+        System.out.print("Key in the passenger name: ");
         dude.Name = getInput.nextLine();
         System.out.print("CNIC: ");
         dude.CNIC = validateCNIC(getInput.nextLine());
@@ -141,7 +154,7 @@ public class Run {
             amount = drawerReader.nextInt();
         drawerReader.close();
 
-        //Update cash amount
+        //Update drawer cash amount
         amount += getFare(dude.DestinationCity);
 
         //Update drawer
@@ -184,10 +197,10 @@ public class Run {
         reservationWriter.println(dude.BookingDate);
         reservationWriter.close();
 
-        Thread.sleep(1500);
+        enterToContinue();
     }
 
-    public static void cancel_res(File reservationFile, File transactionFile)throws Exception {
+    public static void cancel_res()throws Exception {
         System.out.println("=====================================================");
         System.out.println("\t\t\t  Cancel Reservation");
         System.out.println("=====================================================");
@@ -195,16 +208,17 @@ public class Run {
         int amount = 0;
         int recordFound = 0;
 
+        File reservationFile = new File("reservationsDetails.txt");
+        File transactionFile = new File("drawer.txt");
+
         Scanner readDrawer = new Scanner(transactionFile);
         if (readDrawer.hasNextInt())
             amount = readDrawer.nextInt();
-
-        // *** close the scanner object ***
         readDrawer.close();
 
-        //*** You could take the scanner from the main method ***
         Scanner input = new Scanner(System.in);
         System.out.print("Enter CNIC:  ");
+        System.out.println();
         String CNIC = input.nextLine();
         Passenger[] people = fetchPassengerDatabase();
 
@@ -212,39 +226,36 @@ public class Run {
         int index =0;
 
         for (int i = 0; i<total_passengers; i++ ){
-            if (CNIC.equals(people[i].CNIC)){
+            if (CNIC.equals(people[i].CNIC)) {
                 recordFound = 1;
                 System.out.println("Name: " +people[i].Name);
                 System.out.println("CNIC: " +people[i].CNIC);
                 System.out.println("Destination City: " +people[i].DestinationCity);
                 System.out.println("Bus Number" +people[i].BusNumber);
                 System.out.println("Booking Date: " +people[i].BookingDate);
-
-                index = i;}
+                index = i;
+            }
         }
 
         if (recordFound == 0){
             System.out.println("Reservation not found");
-
         }
 
         else{
 
             Passenger[] newpeople = new Passenger[people.length-1];
-
+            System.out.println();
             System.out.print("Are you sure you want to cancel your reservation?\n"
                     +"Enter Y for Yes \n"
                     + "enter N for No:  ");
             String choice = input.next();
             if (choice.equalsIgnoreCase("y")){
-                //*** You could parseInt the "timecheck" directly instead of making a new variable ***
                 String timecheck = getBusTiming(people[index].DestinationCity, people[index].BusNumber-1);
                 int now = timeNow("hm");
                 int timecheckval = Integer.parseInt(timecheck);
 
-                if (timecheckval - now >= 15)
+                if (refundPossible(timecheckval, now))
                     amount -= getFare(people[index].DestinationCity);
-
 
                 int k=0;
 
@@ -259,8 +270,6 @@ public class Run {
                     newpeople[j].DestinationCity = people[k].DestinationCity;
                     newpeople[j].BusNumber = people[k].BusNumber;
                     newpeople[j].BookingDate = people[k].BookingDate;
-                    //*** This one is well just a orthodox programing practice, take k++ up in the loop condition
-                    //k++;
                 }
 
                 PrintWriter cancelWriter = new PrintWriter(reservationFile);
@@ -277,17 +286,15 @@ public class Run {
                 PrintWriter canceldrawerwriter = new PrintWriter(transactionFile);
                 canceldrawerwriter.println(amount);
                 canceldrawerwriter.close();
-                Thread.sleep(500);
                 System.out.println("Reservation Cancelled");
-
+                System.out.println();
             }
 
         }
-
-        Thread.sleep(1500);
+        enterToContinue();
     }
 
-    public static void mod_res(Scanner input, File transactionFile, File reservationFile) throws Exception {    // Method for modification for the reservations.
+    public static void mod_res() throws Exception {    // Method for modification for the reservations.
 
         System.out.println("=====================================================");
         System.out.println("\t\t\t  Reservation Modification");
@@ -295,7 +302,10 @@ public class Run {
         System.out.println("=====================================================");
 
         // Make a scanner type object for reading the "Transaction File"
+        File reservationFile = new File("reservationsDetails.txt");
+        File transactionFile = new File("drawer.txt");
         Scanner readDrawer = new Scanner(transactionFile);
+        Scanner input = new Scanner(System.in);
 
 
         // Initialized the amount to zero.
@@ -342,11 +352,11 @@ public class Run {
             int time_rn = timeNow("hm");
 
             // Checks if the person is cancelling 15 minutes before so the amount can be refunded back to him
-            if ( time_of_bus - time_rn >= 15 ) {
+            if ( refundPossible(time_of_bus, time_rn) ) {
                 rupees -= getFare(people_array[foundAt].DestinationCity);
             }
 
-            else { // If the person id cancelling, less than 15 minutes prior to deparutre, this else condition telling that the amount cannot be refunded
+            else { // If the person is cancelling, less than 15 minutes prior to departure, this else condition telling that the amount cannot be refunded
 
                 System.out.println("We're sorry! There are less than 15 minutes prior to departure. ");
 
@@ -363,7 +373,7 @@ public class Run {
             // Saves the "city'" and the "bus number" into that particular index of array which was reserved for the old booking.
             people_array[foundAt].DestinationCity = getCity(input);
             getBusNumber(people_array[foundAt]);
-            // Adds the fareof the new trip to the drawer
+            // Adds the fare of the new trip to the drawer
             rupees += getFare(people_array[foundAt].DestinationCity);
 
             // Print the booking details
@@ -389,7 +399,7 @@ public class Run {
 
 
 
-            //updating reservations database
+            // Updating reservations database
             PrintWriter reservationWriter = new PrintWriter(reservationFile);
 
             // This loops updates the Reservation database according to the array.
@@ -406,7 +416,7 @@ public class Run {
 
         }
 
-        else { // If the old boooking isn't found then it asks if the person wants a new reservation to be made.
+        else { // If the old booking isn't found then it asks if the person wants a new reservation to be made.
 
             System.out.println();
             System.out.println("Sorry, no previous reservation found.");
@@ -417,7 +427,7 @@ public class Run {
             String choice = input.nextLine();
 
             if ( choice.equalsIgnoreCase("y") ) {
-                new_res(input); // Invoking the new_res() method for the new reservation.
+                new_res(); // Invoking the new_res() method for the new reservation.
             }
 
             else {
@@ -428,9 +438,9 @@ public class Run {
 
         }
 
-        Thread.sleep(1500);
+        enterToContinue();
 
-    } // new_res() method ends here.
+    }
 
     public static void print_res() throws Exception {
         System.out.println("=====================================================");
@@ -450,17 +460,17 @@ public class Run {
         int fsld_res = 0; // Faisalabad
         int lhr_res = 0; // Lahore
 
-        for ( int i = 0 ; i < people.length ; i++ ) {
+        for (Passenger i : people) {
 
-            if ( people[i].DestinationCity.equalsIgnoreCase("Muzaffarabad") )
+            if (i.DestinationCity.equalsIgnoreCase("Muzaffarabad"))
                 muzf_res++;
-            else if ( people[i].DestinationCity.equalsIgnoreCase("Peshawar") )
+            else if (i.DestinationCity.equalsIgnoreCase("Peshawar"))
                 pswr_res++;
-            else if ( people[i].DestinationCity.equalsIgnoreCase("Sialkot") )
+            else if (i.DestinationCity.equalsIgnoreCase("Sialkot"))
                 slkt_res++;
-            else if ( people[i].DestinationCity.equalsIgnoreCase("Faisalabad") )
+            else if (i.DestinationCity.equalsIgnoreCase("Faisalabad"))
                 fsld_res++;
-            else if ( people[i].DestinationCity.equalsIgnoreCase("Lahore") )
+            else if (i.DestinationCity.equalsIgnoreCase("Lahore"))
                 lhr_res++;
         }
 
@@ -471,17 +481,18 @@ public class Run {
         System.out.println("Reservations to Lahore: " +lhr_res);
         System.out.println();
 
-        Thread.sleep(1500);
+        enterToContinue();
 
     }
 
-    public static void search_res(Scanner input) throws Exception {
+    public static void search_res() throws Exception {
 
         System.out.println("=====================================================");
         System.out.println("\t\t\t  Search for Reservations");
         System.out.println("=====================================================");
         System.out.println();
 
+        Scanner input = new Scanner(System.in);
         boolean found = false;
 
         Passenger[] list = fetchPassengerDatabase();
@@ -510,8 +521,8 @@ public class Run {
             System.out.println("Destination city: " + list[foundAt].DestinationCity);
             System.out.println("Bus Number: " + ( list[foundAt].BusNumber));
             System.out.println("Departure at: " + getBusTiming( list[foundAt].DestinationCity, list[foundAt].BusNumber-1));
-            System.out.println("Departure date: " + list[foundAt].BookingDate); // *** Added this print statement ***
-
+            System.out.println("Departure date: " + list[foundAt].BookingDate);
+            System.out.println();
         }
 
         else {
@@ -519,8 +530,7 @@ public class Run {
             System.out.println();
         }
 
-        Thread.sleep(1500);
-
+        enterToContinue();
 
     }
 
@@ -542,10 +552,13 @@ public class Run {
 
         drawerReader.close();
 
-        Thread.sleep(1500);
+        enterToContinue();
     }
 
     public static String validateCNIC(String dude_CNIC) throws Exception{
+
+        //The method is meant to prevent the entry of non-unique CNIC entry
+
         //Declaration block
         Scanner getInput = new Scanner(System.in);
         Passenger [] database = fetchPassengerDatabase();
@@ -557,7 +570,7 @@ public class Run {
             for (Passenger i : database){
                 if (dude_CNIC.equals(i.CNIC)){
                     unique = false;
-                    System.out.print("The booking with this CNIC already exists \nEnter another CNIC: ");
+                    System.out.print("Sorry! A booking with this CNIC already exists. \nEnter another CNIC: ");
                     dude_CNIC = getInput.nextLine();
                     break;
                 }
@@ -568,6 +581,12 @@ public class Run {
     }
 
     public static String getCity(Scanner getInput){
+
+        /*
+        This method is used to get the destination city of a passenger and prevent entry of any
+        such city which is not being travelled to.
+         */
+
         String city;
         boolean correctCity;
         do{
@@ -589,6 +608,20 @@ public class Run {
     }
 
     public static void getBusNumber(Passenger dude) throws Exception {
+        /*
+
+        This method is used to get the bus number of the passenger.
+        The method is working on two basic constraints to decide which
+        bus number should be allocated to a particular passenger, namely;
+        the current time and the seat availability.
+        If the current time lies in between the departure timing of a bus
+        for any particular city and a seat is available in that bus, the
+        method will assign the bus to the passenger. In case of non-availability
+        of a bus in the nearest time frame, the next bus is checked for
+        availability of seats. If available, a seat is booked for that
+        bus otherwise, a booking is made for the next day.
+         */
+
         //Declaration block
         final long DATE_TOMORROW = (long)8.64e+7;
         int time = timeNow("h");
@@ -602,7 +635,7 @@ public class Run {
         if (dude.DestinationCity.equalsIgnoreCase("muzaffarabad") ) {
             do {
                 i = 0;
-                if ((time < 5 || time >= 20) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time < 5 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
@@ -629,6 +662,7 @@ public class Run {
                 else{
                     date += DATE_TOMORROW;
                     dateNow = dateFormat.format(date);
+                    time = 0;
                 }
 
             }while(true);
@@ -637,7 +671,7 @@ public class Run {
         else if (dude.DestinationCity.equalsIgnoreCase("peshawar")){
             do {
                 i = 0;
-                if ((time < 6 || time >= 21) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time < 6 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
@@ -664,6 +698,7 @@ public class Run {
                 else{
                     date += DATE_TOMORROW;
                     dateNow = dateFormat.format(date);
+                    time = 0;
                 }
 
             }while(true);
@@ -671,7 +706,7 @@ public class Run {
         else if (dude.DestinationCity.equalsIgnoreCase("sialkot")){
             do {
                 i = 0;
-                if ((time < 7 || time >= 22) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time < 7 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
@@ -698,6 +733,7 @@ public class Run {
                 else{
                     date += DATE_TOMORROW;
                     dateNow = dateFormat.format(date);
+                    time = 0;
                 }
 
             }while(true);
@@ -705,7 +741,7 @@ public class Run {
         else if (dude.DestinationCity.equalsIgnoreCase("faisalabad")){
             do {
                 i = 0;
-                if ((time < 8 || time >= 23) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time < 8 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
@@ -732,6 +768,7 @@ public class Run {
                 else{
                     date += DATE_TOMORROW;
                     dateNow = dateFormat.format(date);
+                    time = 0;
                 }
 
             }while(true);
@@ -740,7 +777,7 @@ public class Run {
         else {
             do {
                 i = 0;
-                if ((time < 9 || time >= 24) && seatAvailability(dude.DestinationCity, dateNow, i)) {
+                if (time < 9 && seatAvailability(dude.DestinationCity, dateNow, i)) {
                     dude.BusNumber = i;
                     dude.BookingDate = dateNow;
                     break;
@@ -765,8 +802,9 @@ public class Run {
                     break;
                 }
                 else{
-                    date += DATE_TOMORROW; //Goto next day
+                    date += DATE_TOMORROW;
                     dateNow = dateFormat.format(date);
+                    time = 0;
                 }
 
             }while(true);
@@ -774,6 +812,16 @@ public class Run {
     }
 
     public static boolean seatAvailability(String city, String date, int bus) throws Exception {
+
+        /*
+        This method checks for seat availability based on three key factors,
+        one the destination city, second the bus number and lastly the departure
+        date. All the entries for the particular destination city and bus number
+        on a particular date are first counted and then based on the number of entries,
+        the program simply returns a true (denoting to availability of seat) or a false
+        (denoting to the non_availability of seats or a bus being already fully booked)
+         */
+
         //Declaration block
         Passenger [] passengers = fetchPassengerDatabase();
         int seats = 0;
@@ -798,6 +846,12 @@ public class Run {
     }
 
     public static Passenger [] fetchPassengerDatabase() throws  Exception {
+
+        /*
+        This method is used to create an array from the database file, which
+        houses all the reservations made thus far.
+         */
+
         //Working block
         Scanner reservationReader = new Scanner(new File("reservationsDetails.txt"));
         Passenger [] dudes = new Passenger[NumberOfRecords()];
@@ -820,6 +874,10 @@ public class Run {
     }
 
     public static int NumberOfRecords() throws Exception{
+        /*
+        Method to get the number of passengers in the database file.
+         */
+
         //Declaration block
 
         //Create Scanner object to read the data from file
@@ -840,31 +898,39 @@ public class Run {
     }
 
     public static String getBusTiming(String city, int busNumber){
+        /*
+        The method return the departure timings for any particular city
+         */
+
         //Declaration block
         BusTimings timings = new BusTimings();
 
         //Working block
-        if (city.equals("Muzaffarabad"))
+        if (city.equalsIgnoreCase("Muzaffarabad"))
             return timings.Muzaffarabad[busNumber];
-        else if (city.equals("Peshawar"))
+        else if (city.equalsIgnoreCase("Peshawar"))
             return timings.Peshawar[busNumber];
-        else if (city.equals("Sialkot"))
+        else if (city.equalsIgnoreCase("Sialkot"))
             return timings.Sialkot[busNumber];
-        else if (city.equals("Faisalabad"))
+        else if (city.equalsIgnoreCase("Faisalabad"))
             return timings.Faisalabad[busNumber];
         else
             return timings.Lahore[busNumber];
     }
 
     public static int getFare(String city){
+        /*
+        This method returns the ticket fare for the required city
+         */
+
         Fares fare = new Fares();
-        if (city.equals("Muzaffarabad"))
+        if (city.equalsIgnoreCase("Muzaffarabad"))
             return fare.Muzaffarabad;
-        else if (city.equals("Peshawar"))
+        else if (city.equalsIgnoreCase("Peshawar"))
             return fare.Peshawar;
-        else if (city.equals("Sialkot"))
+        else if (city.equalsIgnoreCase("Sialkot"))
             return  fare.Sialkot;
-        else if (city.equals("Faisalabad"))
+        else if (city.equalsIgnoreCase("Faisalabad"))
             return fare.Faisalabad;
         else
             return fare.Lahore;
@@ -872,6 +938,11 @@ public class Run {
     }
 
     public static int timeNow(String timeType){
+        /*
+        The method gets the current system and returns either hours or hour with minutes
+        depending on the time type specified at the time of method invocation
+         */
+
         int hours = 0;
         long totalMilliseconds = System.currentTimeMillis();
         long totalSeconds = totalMilliseconds / 1000;
@@ -892,6 +963,25 @@ public class Run {
             hours = (int)(((currentHour) * 100) + currentMinute);
 
         return hours;
+    }
+
+    public static boolean refundPossible(int busTime, int currentTime) {
+        /*
+        The method simply evaluated from the bus departure time and current
+        time whether refund is possible or not.
+         */
+
+        boolean refundFlag = true;
+        if (busTime > currentTime){
+            if (busTime - currentTime < 15)
+                refundFlag = false;
+        }
+        return refundFlag;
+    }
+
+    public static void enterToContinue() throws Exception {
+        System.out.println("Press enter to continue. ");
+        System.in.read();
     }
 
 }
