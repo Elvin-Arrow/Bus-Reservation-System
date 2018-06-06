@@ -1,9 +1,6 @@
-import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.io.File;
 import java.io.PrintWriter;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.text.DateFormat;
 
 public class Bus_Reservation_System {
@@ -27,7 +24,6 @@ public class Bus_Reservation_System {
 
             while (userChoice != 0) {
 
-                try {
                     mainScreen();
                     System.out.print("Your selection: ");
                     userChoice = getInput.nextInt();
@@ -109,17 +105,6 @@ public class Bus_Reservation_System {
                             System.out.println("Error! No such command found");
                     }
 
-                }
-
-                catch (InputMismatchException e) {
-
-                    System.out.println();
-                    System.out.print("Invalid Selection! Please try again");
-                    System.out.println();
-                    System.out.println();
-                    getInput.next();
-                    Thread.sleep(500);
-                }
             }
 
     }
@@ -211,8 +196,6 @@ public class Bus_Reservation_System {
         reservationWriter.println(dude.BusNumber);
         reservationWriter.println(dude.BookingDate);
         reservationWriter.close();
-
-        getFeedback(dude.Name);
 
         enterToContinue();
     }
@@ -315,7 +298,6 @@ public class Bus_Reservation_System {
                 System.out.println("Reservation Cancelled");
                 System.out.println();
 
-                getFeedback(people[index].Name);
             }
 
         }
@@ -381,7 +363,7 @@ public class Bus_Reservation_System {
             int time_rn = timeNow("hm");
 
             // Checks if the person is cancelling 15 minutes before so the amount can be refunded back to him
-            if ( time_of_bus - time_rn >= 15 ) {
+            if ( timeFinder( time_of_bus, time_rn ) >= 15 ) {
                 rupees -= getFare(people_array[foundAt].DestinationCity);
             }
 
@@ -466,8 +448,6 @@ public class Bus_Reservation_System {
             }
 
         }
-
-        getFeedback(people_array[foundAt].Name);
 
         enterToContinue();
 
@@ -935,39 +915,23 @@ public class Bus_Reservation_System {
         return hours;
     }
 
-    public static void getFeedback(String name) throws Exception {
-        File feedFile = new File("feedbacks.txt");
-        FileWriter feedWriter = new FileWriter(feedFile, true);
-        BufferedWriter buffFeedWrite = new BufferedWriter(feedWriter);
-        Scanner input = new Scanner(System.in);
-
-        System.out.print("Would you like to give feedback? Press \"1\" for feedback:  ");
-        int feedChoice = input.nextInt();
-        System.out.println();
-
-        if ( feedChoice == 1 ) {
-
-            System.out.println("Please enter your feedback:  ");
-            input.nextLine();
-            String feedbackString = input.nextLine();
-            Thread.sleep(250);
-            System.out.println();
-            System.out.println("Thank you for your feedback!");
-            System.out.println();
-
-            buffFeedWrite.write(name);
-            buffFeedWrite.newLine();
-            buffFeedWrite.write(feedbackString);
-            buffFeedWrite.newLine();
-            buffFeedWrite.flush();
-
-        }
-    }
-
     public static void enterToContinue() throws Exception {
         System.out.println("Press any key to continue. ");
         System.in.read();
-        Thread.sleep(1500);
+        Thread.sleep(500);
+    }
+
+    public static int timeFinder(int timeVar1, int timeVar2) {
+        int finalTime;
+        if ( timeVar1 > timeVar2) {
+            finalTime = timeVar1 - timeVar2;
+            return finalTime;
+        }
+
+        else {
+            finalTime = timeVar2 - timeVar1;
+            return finalTime;
+        }
     }
 
 }
